@@ -22,6 +22,45 @@ Duplicate detection, delay prediction, and automatic fraud declarations are not
 implemented. Risk and insight features remain decision-support tools and do not
 make fraud or wrongdoing claims.
 
+## Problem statement
+
+MPLADS project information can be spread across project registers, financial
+records, and uploaded datasets. Sentinel AI provides one review workspace for
+organizing those records, checking data quality, surfacing explainable anomaly
+and risk signals, and preparing reports for human follow-up.
+
+## Key features
+
+- Project register with create, read, update, and delete operations
+- CSV upload, preview, validation, preprocessing, and feature engineering
+- Programme and financial analytics backed by PostgreSQL data
+- Explainable Isolation Forest anomaly detection
+- Weighted risk scoring with contributing signals and manual-review indicators
+- Alerts and recommendations projected from stored risk assessments
+- Executive reports and JSON export with project, anomaly, risk, and alert data
+- Smart Insights that prioritize review actions from existing application data
+- JWT authentication, Argon2 password hashing, protected routes, and role-based
+  access control
+
+## Technology stack
+
+- **Frontend:** React 19, React Router, Vite
+- **Backend:** Python 3.12, FastAPI, Pydantic, SQLAlchemy
+- **Data and ML:** PostgreSQL, Pandas, NumPy, and scikit-learn
+- **Authentication:** JWT bearer tokens and Argon2 password hashing
+- **Storage:** PostgreSQL metadata plus local original and processed CSV directories
+
+## System architecture
+
+The browser loads the React/Vite single-page application on port 5000. Vite
+proxies `/api` requests to the FastAPI service on port 8000. FastAPI validates
+requests, applies authentication and role checks, reads and writes PostgreSQL
+records through SQLAlchemy, and coordinates CSV processing in the `ml/` package.
+Original uploads and generated processed files remain in separate filesystem
+directories. Analytics, anomaly results, risk assessments, alerts, reports, and
+Smart Insights are derived from those stored records rather than fabricated
+statistics.
+
 ## Repository structure
 
 ```text
@@ -57,6 +96,21 @@ make fraud or wrongdoing claims.
 ```
 
 ## Backend setup
+
+### Run on Replit
+
+The existing `Start application` workflow starts both services and uses the
+Replit PostgreSQL connection when available:
+
+```bash
+FRONTEND_PORT=5000 bash start.sh
+```
+
+The preview is served on port 5000, the API is served on port 8000, and the
+launcher starts a local PostgreSQL fallback only when no PostgreSQL URL is
+available.
+
+### Run locally
 
 ```bash
 python3 -m venv .venv
@@ -120,6 +174,63 @@ The Projects page uses the Project CRUD API, the Dashboard uses the Analytics
 API, Dataset Management uses the Dataset and preprocessing APIs, and AI Risk
 Analysis uses the anomaly and risk scoring APIs.
 
+## AI and monitoring components
+
+### Anomaly detection
+
+Preprocessing identifies supported columns, reports missing and invalid values,
+removes duplicate rows by default, imputes missing values, and writes a
+processed copy without changing the original upload. Feature engineering adds
+derived financial, progress, and delay signals where the source columns allow
+it. The anomaly service selects available numeric features and uses an
+Isolation Forest model to produce an anomaly score, anomaly status, risk level,
+and contributing feature explanation for each processed row.
+
+### Risk scoring
+
+Risk scoring combines available anomaly, financial-irregularity, project-delay,
+and progress/expenditure-mismatch signal groups. Missing groups are omitted and
+the remaining weights are rebalanced for that row. Scores are normalized to
+0–100 and mapped to Low, Medium, High, or Critical. High and Critical results
+include explanations and require manual review; they never declare fraud.
+
+### Alerts and recommendations
+
+The Alerts API projects a review queue from stored risk assessments. Critical
+assessments become urgent alerts, High assessments become high-priority alerts,
+and lower levels retain corresponding monitoring priorities. Each alert includes
+the source row, risk score, contributing factors, and a human-review
+recommendation. Alerts are decision-support records, not enforcement decisions.
+
+### Smart Insights
+
+Smart Insights combines project status and utilization signals with stored risk
+assessments, anomaly results, dataset-quality signals, and alerts. It returns
+prioritized insights with a category, relevance score, contributing factors,
+related signals, and a recommended action. The service is deterministic and
+only reports signals derived from available application data.
+
+### Predictive monitoring and early warning
+
+The current repository has no separate predictive forecasting or early-warning
+model. Its anomaly, risk, alert, and Smart Insights outputs provide
+explainable, rule-based monitoring signals for human review. Predictive delay
+estimation and a dedicated early-warning model remain future work.
+
+## Major API groups
+
+- **System:** health and API status
+- **Authentication and users:** registration, login, current user, and
+  administrator-managed roles
+- **Projects and datasets:** project CRUD, CSV upload, listing, preview, and
+  deletion
+- **Analytics:** programme, financial, status, state, recent-project, and delay
+  summaries
+- **Processing and analysis:** preprocessing, quality reports, feature
+  availability, anomaly detection, and risk assessments
+- **Monitoring and reporting:** alerts, recommendations, executive reports, JSON
+  export, and Smart Insights
+
 ## Environment variables
 
 See `.env.example` and `frontend/.env.example` for the available settings.
@@ -128,6 +239,10 @@ configures original file storage, and `PROCESSED_UPLOADS_DIR` configures
 separate processed-file storage. `SESSION_SECRET` signs JWTs and must be a
 random value of at least 32 characters outside development. Tokens expire after
 `ACCESS_TOKEN_EXPIRE_MINUTES`.
+
+When running on Replit, keep `SESSION_SECRET` in Replit Secrets and do not
+commit it. `DATABASE_URL` is supplied by the managed PostgreSQL environment when
+available; the launcher has a local fallback for development.
 
 ## Development scope
 
@@ -176,3 +291,14 @@ rebalanced for that row. The resulting weighted score is converted to a
 0–100 score. Risk levels are Low for 0–25, Medium for 26–50, High for 51–75,
 and Critical for 76–100. High and Critical results include rule-based
 explanations from their actual contributing signals and require manual review.
+
+## Known limitations and future improvements
+
+- Duplicate detection, delay prediction, and automatic fraud declarations are
+  not implemented.
+- Uploaded datasets are not currently linked to project records, so dataset
+  alerts identify source rows rather than a project-register ID.
+- Predictive forecasting and a dedicated early-warning model are not implemented.
+- Future improvements may add project-dataset linkage, richer validation
+  feedback, and predictive monitoring after the current decision-support
+  workflow is validated.

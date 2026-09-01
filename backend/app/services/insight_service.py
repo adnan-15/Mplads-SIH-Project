@@ -61,6 +61,13 @@ def _factor(signal: str, label: str, value: Any) -> dict[str, Any]:
     return {"signal": signal, "label": label, "value": value}
 
 
+def _factor_dicts(factors: list[Any]) -> list[dict[str, Any]]:
+    return [
+        factor.model_dump() if hasattr(factor, "model_dump") else factor
+        for factor in factors
+    ]
+
+
 def _project_insights(project: Project) -> list[SmartInsightResponse]:
     now = datetime.now(timezone.utc)
     insights: list[SmartInsightResponse] = []
@@ -271,7 +278,7 @@ def generate_insights(db: Session) -> list[SmartInsightResponse]:
         priority=None,
     )
     for alert in alerts:
-        alert_factors = alert.contributing_factors or [
+        alert_factors = _factor_dicts(alert.contributing_factors) or [
             _factor("risk_level", "Risk level", alert.risk_level.value),
             _factor("risk_score", "Risk score", alert.risk_score),
         ]
