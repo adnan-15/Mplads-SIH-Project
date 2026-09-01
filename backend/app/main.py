@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api.alerts import router as alerts_router
 from backend.app.api.analytics import router as analytics_router
 from backend.app.api.anomalies import router as anomalies_router
+from backend.app.api.auth import router as auth_router
 from backend.app.api.datasets import router as datasets_router
 from backend.app.api.insights import router as insights_router
 from backend.app.api.preprocessing import router as preprocessing_router
@@ -13,6 +14,7 @@ from backend.app.api.projects import router as projects_router
 from backend.app.api.reports import router as reports_router
 from backend.app.api.risk import router as risk_router
 from backend.app.api.routes import router
+from backend.app.api.users import router as users_router
 from backend.app.core.config import settings
 from backend.app.db.database import Base, engine
 from backend.app.models import (  # noqa: F401
@@ -21,6 +23,7 @@ from backend.app.models import (  # noqa: F401
     DatasetProcessingResult,
     Project,
     RiskAssessment,
+    User,
 )
 
 
@@ -46,6 +49,8 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(auth_router)
+app.include_router(users_router)
 app.include_router(alerts_router)
 app.include_router(projects_router)
 app.include_router(datasets_router)

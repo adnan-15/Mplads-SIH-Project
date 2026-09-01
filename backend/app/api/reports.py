@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
+from backend.app.api.dependencies import get_current_user
 from backend.app.models.risk_assessment import RiskAssessmentLevel
 from backend.app.schemas.alerts import AlertPriority
 from backend.app.schemas.reports import (
@@ -16,7 +17,11 @@ from backend.app.services.report_service import (
 )
 
 
-router = APIRouter(prefix="/reports", tags=["reports"])
+router = APIRouter(
+    prefix="/reports",
+    tags=["reports"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def _filters(

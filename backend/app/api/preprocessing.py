@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from backend.app.api.dependencies import get_current_user, require_roles
 from backend.app.db.database import get_db
 from backend.app.models.dataset import Dataset
+from backend.app.models.user import User, UserRole
 from backend.app.schemas.preprocessing import (
     FeaturesResponse,
     PreprocessingSummary,
@@ -14,7 +16,11 @@ from backend.app.services.preprocessing_service import (
 )
 
 
-router = APIRouter(prefix="/datasets", tags=["preprocessing"])
+router = APIRouter(
+    prefix="/datasets",
+    tags=["preprocessing"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def _get_dataset_or_404(dataset_id: int, db: Session) -> Dataset:
@@ -41,7 +47,17 @@ def _get_result_or_404(dataset_id: int, db: Session):
     "/{dataset_id}/preprocess",
     response_model=PreprocessingSummary,
 )
-def preprocess_dataset_endpoint(dataset_id: int, db: Session = Depends(get_db)):
+def preprocess_dataset_endpoint(
+    dataset_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(
+            UserRole.ADMIN,
+            UserRole.GOVERNMENT_OFFICER,
+            UserRole.ANALYST,
+        )
+    ),
+):
     dataset = _get_dataset_or_404(dataset_id, db)
     try:
         result = preprocess_dataset(dataset, db)

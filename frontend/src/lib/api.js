@@ -1,18 +1,40 @@
 const API_BASE_URL = (
   import.meta.env?.VITE_API_BASE_URL || "/api"
 ).replace(/\/$/, "");
+export const AUTH_TOKEN_KEY = "mplads_access_token";
+
+export function getStoredToken() {
+  return window.localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+export function storeToken(token) {
+  window.localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+export function clearStoredToken() {
+  window.localStorage.removeItem(AUTH_TOKEN_KEY);
+}
 
 async function request(path, options = {}) {
   const isFormData = options.body instanceof FormData;
+  const headers = isFormData
+    ? { ...(options.headers || {}) }
+    : {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      };
+  const token = getStoredToken();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: isFormData
-      ? options.headers
-      : {
-          "Content-Type": "application/json",
-          ...options.headers,
-        },
     ...options,
+    headers,
   });
+
+  if (response.status === 401 && typeof window !== "undefined") {
+    window.dispatchEvent(new Event("auth:logout"));
+  }
 
   if (!response.ok) {
     let detail = "The request could not be completed.";
@@ -29,6 +51,42 @@ async function request(path, options = {}) {
     return null;
   }
   return response.json();
+}
+
+export function registerUser(payload) {
+  return request("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function loginUser(payload) {
+  return request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getCurrentUser() {
+  return request("/auth/me");
+}
+
+export function getUsers() {
+  return request("/users");
+}
+
+export function createManagedUser(payload) {
+  return request("/users", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
+
+export function updateUserRole(userId, role) {
+  return request(`/users/${userId}/role`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
 }
 
 export function getProjects() {

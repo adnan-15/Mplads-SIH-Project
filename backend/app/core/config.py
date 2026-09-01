@@ -14,6 +14,9 @@ class Settings(BaseSettings):
     anomaly_contamination: float = 0.1
     anomaly_random_state: int = 42
     anomaly_n_estimators: int = 100
+    session_secret: str | None = None
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60
 
     model_config = SettingsConfigDict(
         env_file=".env",

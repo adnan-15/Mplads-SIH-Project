@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
+from backend.app.api.dependencies import get_current_user
 from backend.app.schemas.insights import (
     InsightCategory,
     InsightPriority,
@@ -17,7 +18,10 @@ from backend.app.services.insight_service import (
 )
 
 
-router = APIRouter(tags=["smart-insights"])
+router = APIRouter(
+    tags=["smart-insights"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get("/insights", response_model=SmartInsightListResponse)

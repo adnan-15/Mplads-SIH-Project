@@ -2,7 +2,8 @@
 
 MPLADS Sentinel AI is a full-stack foundation for a government analytics platform focused on MPLADS project and financial data.
 
-This repository currently contains **Phase 7: Risk Scoring Engine**:
+This repository currently contains the incremental MPLADS Sentinel AI platform
+through **Phase 13: Authentication and Role-Based Access Control**:
 
 - React frontend with connected Projects and Dataset Management modules
 - FastAPI backend with health, Project CRUD, Dataset Management, Analytics, and
@@ -14,9 +15,12 @@ This repository currently contains **Phase 7: Risk Scoring Engine**:
 - Explainable anomaly detection and weighted risk scoring with manual-review
   indicators
 - PostgreSQL-backed anomaly and risk assessment APIs
+- JWT authentication with secure password hashing and role-based access control
+- Protected React routes with persistent sessions and admin user management
 
-Authentication, alerts, duplicate detection, delay prediction, and automatic
-fraud declarations are not implemented.
+Duplicate detection, delay prediction, and automatic fraud declarations are not
+implemented. Risk and insight features remain decision-support tools and do not
+make fraud or wrongdoing claims.
 
 ## Repository structure
 
@@ -94,6 +98,12 @@ Backend endpoints:
 - `GET /datasets/{dataset_id}/risk-assessments` — list risk assessments with
   pagination and risk-level filtering
 - `GET /datasets/{dataset_id}/risk-summary` — summarize stored risk assessments
+- `POST /auth/register` — register a user and receive a JWT session
+- `POST /auth/login` — authenticate a user and receive a JWT session
+- `GET /auth/me` — retrieve the authenticated user
+- `GET /users` — list users (Admin only)
+- `POST /users` — create a managed user (Admin only)
+- `PATCH /users/{user_id}/role` — change a user role (Admin only)
 - `GET /docs` — FastAPI-generated API documentation
 
 ## Frontend setup
@@ -115,7 +125,9 @@ Analysis uses the anomaly and risk scoring APIs.
 See `.env.example` and `frontend/.env.example` for the available settings.
 `DATABASE_URL` configures the SQLAlchemy PostgreSQL engine, `UPLOADS_DIR`
 configures original file storage, and `PROCESSED_UPLOADS_DIR` configures
-separate processed-file storage.
+separate processed-file storage. `SESSION_SECRET` signs JWTs and must be a
+random value of at least 32 characters outside development. Tokens expire after
+`ACCESS_TOKEN_EXPIRE_MINUTES`.
 
 ## Development scope
 
@@ -123,6 +135,28 @@ Implementation should remain incremental. Preprocessing records every detected
 quality issue and transformation summary without changing the original upload.
 Risk results remain explainable decision-support indicators and never
 automatically declare fraud.
+
+## Phase 13 authentication and roles
+
+Authentication is implemented with JWT bearer tokens and Argon2 password
+hashing. Registration is public, but newly registered accounts receive the
+Viewer role after the initial bootstrap account. The first registered account
+receives the Admin role so an empty installation can be administered; Admins
+can create users and assign roles from the User Management page.
+
+Role permissions are intentionally conservative:
+
+- **Admin:** full access, including user management and destructive actions
+- **Government Officer:** manage projects and datasets, run analysis, and
+  review all monitoring output
+- **Analyst:** upload and process datasets, run anomaly/risk analysis, and
+  review monitoring output
+- **Viewer:** read-only access to permitted dashboards, projects, alerts,
+  reports, and Smart Insights
+
+Health and authentication registration/login endpoints remain public. Existing
+application data endpoints require authentication, while write operations
+enforce the role policy above.
 
 ## Phase 7 risk scoring
 

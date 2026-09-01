@@ -1,1 +1,2 @@
 - [Imported Python setup](imported-python-setup.md) — base Python imports may lack pip; use a package-enabled Python toolchain before installing requirements.
+- [FastAPI test client](fastapi-testclient-httpx2.md) — this environment’s Starlette TestClient needs the httpx2 compatibility package for isolated API tests.

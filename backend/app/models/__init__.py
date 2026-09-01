@@ -14,6 +14,7 @@ from backend.app.models.risk_assessment import (
     RiskAssessment,
     RiskAssessmentLevel,
 )
+from backend.app.models.user import User, UserRole
 
 __all__ = [
     "Dataset",
@@ -26,4 +27,6 @@ __all__ = [
     "ProjectStatus",
     "RiskAssessment",
     "RiskAssessmentLevel",
+    "User",
+    "UserRole",
 ]

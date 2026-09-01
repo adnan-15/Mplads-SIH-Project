@@ -9,6 +9,7 @@ import {
   preprocessDataset,
   uploadDataset,
 } from "../lib/api";
+import { useAuth } from "../context/AuthContext";
 
 const fileSizeFormatter = new Intl.NumberFormat("en-IN");
 
@@ -114,6 +115,7 @@ function DatasetUpload({ onUploaded }) {
 }
 
 function DatasetList({
+  canDelete,
   datasets,
   isLoading,
   onDelete,
@@ -222,16 +224,18 @@ function DatasetList({
                       </div>
                     </td>
                     <td>
-                      <button
-                        className="delete-button"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          onDelete(dataset);
-                        }}
-                        type="button"
-                      >
-                        Delete
-                      </button>
+                      {canDelete && (
+                        <button
+                          className="delete-button"
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            onDelete(dataset);
+                          }}
+                          type="button"
+                        >
+                          Delete
+                        </button>
+                      )}
                     </td>
                   </tr>
                 );
@@ -474,6 +478,8 @@ function DatasetProcessingPanel({
 }
 
 export function DatasetManagement() {
+  const { user } = useAuth();
+  const canDelete = ["Admin", "Government Officer"].includes(user.role);
   const [datasets, setDatasets] = useState([]);
   const [selectedDataset, setSelectedDataset] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -626,6 +632,7 @@ export function DatasetManagement() {
       )}
 
       <DatasetList
+        canDelete={canDelete}
         datasets={datasets}
         isLoading={isLoading}
         onDelete={handleDelete}

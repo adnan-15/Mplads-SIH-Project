@@ -5,9 +5,11 @@ from sqlalchemy import desc, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from backend.app.api.dependencies import get_current_user, require_roles
 from backend.app.db.database import get_db
 from backend.app.models.dataset import Dataset, DatasetUploadStatus
 from backend.app.models.dataset_processing import DatasetProcessingResult
+from backend.app.models.user import User, UserRole
 from backend.app.services.preprocessing_service import remove_processed_file
 from backend.app.schemas.dataset import DatasetPreviewResponse, DatasetResponse
 from backend.app.services.dataset_service import (
@@ -20,7 +22,11 @@ from backend.app.services.dataset_service import (
 )
 
 
-router = APIRouter(prefix="/datasets", tags=["datasets"])
+router = APIRouter(
+    prefix="/datasets",
+    tags=["datasets"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def _ensure_csv_file(file: UploadFile) -> str:
@@ -46,6 +52,13 @@ def _ensure_csv_file(file: UploadFile) -> str:
 async def upload_dataset(
     file: UploadFile | None = File(default=None),
     db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(
+            UserRole.ADMIN,
+            UserRole.GOVERNMENT_OFFICER,
+            UserRole.ANALYST,
+        )
+    ),
 ):
     if file is None:
         raise HTTPException(
@@ -138,7 +151,13 @@ def preview_dataset(dataset_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/{dataset_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_dataset(dataset_id: int, db: Session = Depends(get_db)):
+def delete_dataset(
+    dataset_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(UserRole.ADMIN, UserRole.GOVERNMENT_OFFICER)
+    ),
+):
     dataset = db.get(Dataset, dataset_id)
     if dataset is None:
         raise HTTPException(

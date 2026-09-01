@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
+from backend.app.api.dependencies import get_current_user
 from backend.app.models.risk_assessment import RiskAssessmentLevel
 from backend.app.schemas.alerts import (
     AlertPriority,
@@ -16,7 +17,11 @@ from backend.app.services.alert_service import (
 )
 
 
-router = APIRouter(prefix="/alerts", tags=["risk-alerts"])
+router = APIRouter(
+    prefix="/alerts",
+    tags=["risk-alerts"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.get("", response_model=RiskAlertListResponse)

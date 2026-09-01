@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 
 from backend.app.db.database import get_db
 from backend.app.models.project import Project
+from backend.app.models.user import User, UserRole
+from backend.app.api.dependencies import get_current_user, require_roles
 from backend.app.schemas.project import (
     ProjectCreate,
     ProjectResponse,
@@ -12,11 +14,21 @@ from backend.app.schemas.project import (
 )
 
 
-router = APIRouter(prefix="/projects", tags=["projects"])
+router = APIRouter(
+    prefix="/projects",
+    tags=["projects"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 @router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
-def create_project(payload: ProjectCreate, db: Session = Depends(get_db)):
+def create_project(
+    payload: ProjectCreate,
+    db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(UserRole.ADMIN, UserRole.GOVERNMENT_OFFICER)
+    ),
+):
     project = Project(**payload.model_dump())
     db.add(project)
     try:
@@ -53,6 +65,9 @@ def update_project(
     project_id: int,
     payload: ProjectUpdate,
     db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(UserRole.ADMIN, UserRole.GOVERNMENT_OFFICER)
+    ),
 ):
     project = db.get(Project, project_id)
     if project is None:
@@ -84,7 +99,11 @@ def update_project(
 
 
 @router.delete("/{project_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_project(project_id: int, db: Session = Depends(get_db)):
+def delete_project(
+    project_id: int,
+    db: Session = Depends(get_db),
+    _: User = Depends(require_roles(UserRole.ADMIN)),
+):
     project = db.get(Project, project_id)
     if project is None:
         raise HTTPException(

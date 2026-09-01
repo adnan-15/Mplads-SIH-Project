@@ -2,12 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from backend.app.api.dependencies import get_current_user, require_roles
 from backend.app.db.database import get_db
 from backend.app.models.anomaly_detection import (
     AnomalyDetectionResult,
     AnomalyRiskLevel,
 )
 from backend.app.models.dataset import Dataset
+from backend.app.models.user import User, UserRole
 from backend.app.schemas.anomaly import (
     AnomalyListResponse,
     AnomalyResultResponse,
@@ -23,7 +25,11 @@ from backend.app.services.anomaly_service import (
 from ml.anomaly_detection.feature_selector import InsufficientFeaturesError
 
 
-router = APIRouter(prefix="/datasets", tags=["anomaly-detection"])
+router = APIRouter(
+    prefix="/datasets",
+    tags=["anomaly-detection"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def _get_dataset_or_404(dataset_id: int, db: Session) -> Dataset:
@@ -63,6 +69,13 @@ def detect_dataset_anomalies(
     dataset_id: int,
     request: DetectionRequest | None = None,
     db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(
+            UserRole.ADMIN,
+            UserRole.GOVERNMENT_OFFICER,
+            UserRole.ANALYST,
+        )
+    ),
 ):
     dataset = _get_dataset_or_404(dataset_id, db)
     try:

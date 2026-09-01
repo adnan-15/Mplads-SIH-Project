@@ -1,9 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from backend.app.api.dependencies import get_current_user, require_roles
 from backend.app.db.database import get_db
 from backend.app.models.dataset import Dataset
 from backend.app.models.risk_assessment import RiskAssessmentLevel
+from backend.app.models.user import User, UserRole
 from backend.app.schemas.risk import (
     RiskAssessmentListResponse,
     RiskAssessmentResponse,
@@ -16,7 +18,11 @@ from backend.app.services.risk_scoring_service import (
 )
 
 
-router = APIRouter(prefix="/datasets", tags=["risk-scoring"])
+router = APIRouter(
+    prefix="/datasets",
+    tags=["risk-scoring"],
+    dependencies=[Depends(get_current_user)],
+)
 
 
 def _get_dataset_or_404(dataset_id: int, db: Session) -> Dataset:
@@ -36,6 +42,13 @@ def _get_dataset_or_404(dataset_id: int, db: Session) -> Dataset:
 def calculate_dataset_risk(
     dataset_id: int,
     db: Session = Depends(get_db),
+    _: User = Depends(
+        require_roles(
+            UserRole.ADMIN,
+            UserRole.GOVERNMENT_OFFICER,
+            UserRole.ANALYST,
+        )
+    ),
 ):
     dataset = _get_dataset_or_404(dataset_id, db)
     try:

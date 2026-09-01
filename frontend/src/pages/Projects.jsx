@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { ProjectForm } from "../components/ProjectForm";
+import { useAuth } from "../context/AuthContext";
 import { createProject, getProjects } from "../lib/api";
 
 const amountFormatter = new Intl.NumberFormat("en-IN", {
@@ -16,6 +17,8 @@ function formatAmount(amount) {
 }
 
 export function Projects() {
+  const { user } = useAuth();
+  const canCreate = ["Admin", "Government Officer"].includes(user.role);
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -55,13 +58,15 @@ export function Projects() {
             monitoring and analysis.
           </p>
         </div>
-        <button
-          className="primary-button"
-          onClick={() => setIsFormOpen(true)}
-          type="button"
-        >
-          Add project
-        </button>
+        {canCreate && (
+          <button
+            className="primary-button"
+            onClick={() => setIsFormOpen(true)}
+            type="button"
+          >
+            Add project
+          </button>
+        )}
       </div>
 
       {isFormOpen && (

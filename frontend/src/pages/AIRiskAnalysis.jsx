@@ -609,6 +609,7 @@ export function AIRiskAnalysis() {
   const [riskError, setRiskError] = useState("");
   const [riskSuccess, setRiskSuccess] = useState("");
   const [page, setPage] = useState(1);
+  const [riskFilter, setRiskFilter] = useState("");
   const [anomalyFilter, setAnomalyFilter] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -956,11 +957,11 @@ export function AIRiskAnalysis() {
                 <span>Risk level</span>
                 <select
                   onChange={(event) => {
-                    setAssessmentRiskFilter(event.target.value);
+                     setRiskFilter(event.target.value);
                     setPage(1);
                     setSelectedResult(null);
                   }}
-                  value={assessmentRiskFilter}
+                   value={riskFilter}
                 >
                   <option value="">All risk levels</option>
                   {RISK_LEVELS.map((level) => (

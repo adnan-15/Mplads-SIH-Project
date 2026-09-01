@@ -22,6 +22,7 @@ export const navItems = [
     label: "AI Risk Analysis",
     shortLabel: "R",
     description: "Explainable AI-assisted risk analysis will appear here.",
+    requiredRoles: ["Admin", "Government Officer", "Analyst"],
   },
   {
     path: "/alerts",
@@ -46,5 +47,13 @@ export const navItems = [
     label: "Dataset Management",
     shortLabel: "DS",
     description: "Dataset registration and validation will appear here.",
+    requiredRoles: ["Admin", "Government Officer", "Analyst"],
+  },
+  {
+    path: "/users",
+    label: "User Management",
+    shortLabel: "U",
+    description: "Manage workspace accounts and roles.",
+    requiredRoles: ["Admin"],
   },
 ];
