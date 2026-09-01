@@ -1,0 +1,1 @@
+- [Imported Python setup](imported-python-setup.md) — base Python imports may lack pip; use a package-enabled Python toolchain before installing requirements.
