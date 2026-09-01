@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PYTHON="${PYTHON:-$ROOT_DIR/.venv/bin/python}"
+PYTHON="${PYTHON:-$ROOT_DIR/.pythonlibs/bin/python}"
 
 if [[ ! -x "$PYTHON" ]]; then
   PYTHON="${PYTHON_FALLBACK:-python3}"
