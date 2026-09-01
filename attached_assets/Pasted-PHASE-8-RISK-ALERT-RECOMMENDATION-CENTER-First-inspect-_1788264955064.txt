@@ -1,0 +1,128 @@
+PHASE 8 — RISK ALERT & RECOMMENDATION CENTER
+
+First inspect the existing project architecture and Phase 1–7 implementation before making changes.
+
+The application already has:
+- FastAPI backend
+- PostgreSQL database
+- React/Vite frontend
+- Project analytics
+- Dataset processing
+- Anomaly detection
+- Phase 7 risk scoring engine with 0–100 normalized scores and risk levels
+
+Implement ONLY Phase 8.
+
+GOAL:
+Build a Risk Alert & Recommendation Center that converts existing Phase 7 risk assessments into prioritized actionable alerts.
+
+BACKEND REQUIREMENTS:
+
+1. Reuse the existing Phase 7 risk assessment data.
+Do not redesign or replace the existing risk scoring engine.
+
+2. Create alert logic based on existing risk levels:
+
+- Critical:
+  priority = urgent
+  recommendation = immediate manual review required
+
+- High:
+  priority = high
+  recommendation = investigate contributing anomaly, financial, delay, or progress signals
+
+- Medium:
+  priority = medium
+  recommendation = monitor project and review changes
+
+- Low:
+  priority = low
+  recommendation = continue regular monitoring
+
+3. Alerts must be generated from actual existing risk assessment data.
+Do not use fake AI predictions or fabricated fraud claims.
+
+4. Include meaningful fields such as:
+- project identifier
+- project name if available
+- risk score
+- risk level
+- alert priority
+- contributing factors
+- recommendation
+- created timestamp
+
+5. Add minimal API endpoints for:
+- listing alerts
+- filtering by priority or risk level
+- retrieving an individual alert if appropriate
+- alert summary counts
+
+6. Support pagination where consistent with existing API patterns.
+
+7. Preserve all existing Phase 1–7 APIs and behavior.
+
+FRONTEND REQUIREMENTS:
+
+1. Add a Risk Alerts section to the existing application.
+
+2. Show:
+- total alerts
+- critical alerts
+- high priority alerts
+- medium alerts
+- low alerts
+
+3. Create a clear alert list/table/card interface showing:
+- project
+- risk score
+- risk level
+- priority
+- contributing factors
+- recommended action
+
+4. Add filtering for:
+- risk level
+- alert priority
+
+5. Make Critical and High alerts visually prominent without redesigning the existing application.
+
+6. Reuse the existing frontend design system and components where possible.
+Do not redesign unrelated pages.
+
+IMPORTANT CONSTRAINTS:
+
+- Do not modify Phase 1–7 functionality.
+- Do not refactor unrelated code.
+- Do not change the existing risk scoring algorithm unless absolutely required for compatibility.
+- Do not add authentication.
+- Do not add external paid services.
+- Do not make fraud accusations.
+- Recommendations must be decision-support guidance based on available signals.
+- Make the minimum necessary database and API changes.
+- Keep the implementation focused and credit-efficient.
+
+VERIFICATION:
+
+After implementation verify:
+
+1. Backend Python compilation passes.
+2. FastAPI routes register successfully.
+3. PostgreSQL alert storage or retrieval works.
+4. Existing Phase 7 risk scoring still works.
+5. Alert generation correctly maps risk levels to priorities.
+6. Filtering works.
+7. Pagination works if implemented.
+8. Frontend production build passes.
+9. Replit preview loads successfully.
+10. Existing Phase 1–7 API smoke checks still pass.
+
+Do not start Phase 9.
+
+At the end provide only a concise summary of:
+- files changed
+- endpoints added
+- frontend features added
+- verification results
+
+Do not perform unnecessary exploration or unrelated improvements.
