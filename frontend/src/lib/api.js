@@ -202,3 +202,34 @@ export function getExecutiveReport(filters = {}) {
 export function getReportExport(filters = {}) {
   return request(`/reports/export${reportQuery(filters)}`);
 }
+
+export function getInsights({
+  category = "",
+  page = 1,
+  pageSize = 20,
+  priority = "",
+  projectId = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (category) {
+    params.set("category", category);
+  }
+  if (priority) {
+    params.set("priority", priority);
+  }
+  if (projectId) {
+    params.set("project_id", projectId);
+  }
+  return request(`/insights?${params.toString()}`);
+}
+
+export function getInsightSummary() {
+  return request("/insights/summary");
+}
+
+export function getProjectInsights(projectId) {
+  return request(`/projects/${projectId}/insights`);
+}

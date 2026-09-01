@@ -7,6 +7,7 @@ from backend.app.api.alerts import router as alerts_router
 from backend.app.api.analytics import router as analytics_router
 from backend.app.api.anomalies import router as anomalies_router
 from backend.app.api.datasets import router as datasets_router
+from backend.app.api.insights import router as insights_router
 from backend.app.api.preprocessing import router as preprocessing_router
 from backend.app.api.projects import router as projects_router
 from backend.app.api.reports import router as reports_router
@@ -52,4 +53,5 @@ app.include_router(analytics_router)
 app.include_router(preprocessing_router)
 app.include_router(anomalies_router)
 app.include_router(risk_router)
+app.include_router(insights_router)
 app.include_router(reports_router)

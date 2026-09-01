@@ -1,0 +1,235 @@
+Implement Phase 11 for the existing MPLADS Sentinel AI Analytics Platform.
+
+PHASE 11 TITLE:
+AI Decision Intelligence & Smart Insights
+
+IMPORTANT RULES:
+- First inspect the existing Phase 1–10 architecture and implementation.
+- Do not modify, remove, rename, or break existing Phase 1–10 functionality.
+- Reuse existing database models, APIs, services, frontend components, and styling patterns wherever possible.
+- Keep Phase 11 focused and avoid unnecessary refactoring.
+- Do not start Phase 12.
+- Do not fabricate AI results, predictions, anomalies, risks, or recommendations.
+- All insights must be derived from actual available project data.
+
+OBJECTIVE:
+
+Create an AI Decision Intelligence layer that transforms existing analytics, anomaly detection, risk assessments, alerts, recommendations, and reports into clear actionable insights for administrators.
+
+This phase should help answer questions such as:
+
+- Which projects require immediate attention?
+- Why does a project have a high risk score?
+- What are the most important active alerts?
+- Which projects have multiple warning signals?
+- What should an administrator review first?
+
+BACKEND REQUIREMENTS:
+
+1. Create a Smart Insights service.
+
+The service should analyze existing available data from:
+
+- Projects
+- Datasets
+- Analytics
+- Phase 6 anomaly detection
+- Phase 7 risk assessments
+- Phase 8 alerts and recommendations
+- Phase 10 reports
+
+2. Create an insight scoring mechanism.
+
+Each insight should include:
+
+- insight_id
+- project_id when applicable
+- title
+- description
+- category
+- priority
+- confidence or relevance score
+- contributing factors
+- recommended action
+
+Possible categories:
+
+- Risk
+- Alert
+- Anomaly
+- Financial
+- Delay
+- Progress
+- Data Quality
+
+Possible priorities:
+
+- Low
+- Medium
+- High
+- Critical
+
+3. Create an API endpoint:
+
+GET /api/insights
+
+Support optional filtering:
+
+- project_id
+- category
+- priority
+
+Support pagination.
+
+4. Create an executive insights endpoint:
+
+GET /api/insights/summary
+
+Return:
+
+- Total insights
+- Critical insights
+- High priority insights
+- Projects requiring attention
+- Top contributing factors
+- Most important recommended actions
+
+5. Create a project-specific endpoint:
+
+GET /api/projects/{project_id}/insights
+
+Return insights specifically related to that project.
+
+6. Add explainability.
+
+For every High or Critical insight, include:
+
+- Why this insight was generated
+- Which existing signals contributed
+- Which anomaly, risk, alert, or project metric triggered it
+
+Do not use vague explanations.
+
+Explain insights using actual available application data.
+
+7. Handle missing data safely.
+
+If insufficient data exists:
+
+- Return valid empty results
+- Clearly indicate that insufficient data is available
+- Do not invent conclusions
+
+FRONTEND REQUIREMENTS:
+
+1. Add a new navigation item:
+
+Smart Insights
+
+2. Create a dedicated Smart Insights page.
+
+Suggested sections:
+
+SMART INSIGHTS OVERVIEW
+
+Show summary cards:
+
+- Total Insights
+- Critical Insights
+- High Priority
+- Projects Requiring Attention
+
+3. Add a Priority Insights section.
+
+Display the most important insights first.
+
+Each insight card should show:
+
+- Priority badge
+- Category
+- Project name if available
+- Insight title
+- Short explanation
+- Recommended action
+
+4. Add an "Why?" or "Explain" interaction.
+
+When opened, display:
+
+- Contributing factors
+- Related risk level
+- Related alerts
+- Related anomaly signals
+- Reason the insight was generated
+
+5. Add filters:
+
+- Category
+- Priority
+- Project
+
+6. Add pagination.
+
+7. Create an empty state when no insights are available.
+
+Example:
+
+"No decision insights are available yet. Add project and monitoring data to generate insights."
+
+8. Keep the UI consistent with the existing MPLADS Sentinel design.
+
+INSIGHT GENERATION RULES:
+
+- Do not claim fraud.
+- Do not claim corruption.
+- Do not accuse individuals.
+- Do not invent predictive outcomes.
+- Do not fabricate confidence values.
+- Use only deterministic logic based on existing application signals unless an existing ML component already supports the calculation.
+- Clearly describe insights as decision-support information.
+
+DATA INTEGRITY:
+
+All insights must trace back to existing application data.
+
+An insight should be reproducible from:
+
+- Risk scores
+- Alerts
+- Anomalies
+- Project progress
+- Financial information
+- Available analytics
+
+VERIFICATION:
+
+Perform focused verification only.
+
+Check:
+
+- Backend imports successfully
+- Phase 11 API routes register correctly
+- Insight generation works with available data
+- Empty state works correctly
+- Filtering works
+- Pagination works
+- High and Critical insights include explanations
+- Project-specific insights work
+- Frontend production build succeeds
+- Existing Phase 1–10 APIs remain available
+
+Do not perform unnecessary repeated full-project verification.
+
+FINAL RESPONSE FORMAT:
+
+After implementation provide only:
+
+1. Phase 11 features implemented
+2. Insight generation logic added
+3. Files created or modified
+4. New API routes
+5. Frontend pages/components added
+6. Focused verification results
+7. Confirmation that Phase 1–10 functionality was not intentionally changed
+
+Do not start Phase 12.

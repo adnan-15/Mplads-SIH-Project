@@ -36,6 +36,12 @@ export const navItems = [
     description: "Executive summaries and structured exports will appear here.",
   },
   {
+    path: "/smart-insights",
+    label: "Smart Insights",
+    shortLabel: "SI",
+    description: "Explainable decision-support insights will appear here.",
+  },
+  {
     path: "/dataset-management",
     label: "Dataset Management",
     shortLabel: "DS",
