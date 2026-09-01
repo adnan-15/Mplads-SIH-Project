@@ -1,0 +1,1 @@
+"""Model artifact boundary for future persisted model versions."""

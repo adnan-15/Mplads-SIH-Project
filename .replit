@@ -1,0 +1,6 @@
+modules = ["nodejs-24", "python-base-3.13"]
+run = "bash start.sh"
+
+[nix]
+channel = "stable-25_05"
+packages = ["glibcLocales", "postgresql"]
