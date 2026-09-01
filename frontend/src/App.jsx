@@ -7,6 +7,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { DatasetManagement } from "./pages/DatasetManagement";
 import { Projects } from "./pages/Projects";
 import { RiskAlerts } from "./pages/RiskAlerts";
+import { Reports } from "./pages/Reports";
 
 function Navigation() {
   return (
@@ -68,6 +69,7 @@ function AppShell() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/ai-risk-analysis" element={<AIRiskAnalysis />} />
             <Route path="/alerts" element={<RiskAlerts />} />
+            <Route path="/reports" element={<Reports />} />
             {navItems
               .filter(
                 (item) =>
@@ -75,6 +77,7 @@ function AppShell() {
                   item.path !== "/projects" &&
                   item.path !== "/ai-risk-analysis" &&
                   item.path !== "/alerts" &&
+                  item.path !== "/reports" &&
                   item.path !== "/dataset-management",
               )
               .map((item) => (

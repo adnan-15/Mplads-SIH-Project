@@ -1,0 +1,170 @@
+Implement Phase 10 for the existing MPLADS Sentinel AI Analytics Platform.
+
+PHASE 10 TITLE:
+Executive Reports & Export Center
+
+IMPORTANT RULES:
+- First inspect the existing Phase 1–8 implementation and architecture.
+- Do not modify, remove, rename, or break any existing Phase 1–8 functionality.
+- Reuse existing database models, API patterns, frontend components, styling conventions, and routing structure wherever possible.
+- Do not start any Phase 11 work.
+- Keep the implementation focused only on Phase 10.
+- Avoid unnecessary refactoring.
+- Do not repeatedly perform expensive full-project verification while implementing.
+
+OBJECTIVE:
+Create an Executive Reports & Export Center that allows users to generate structured summaries of existing MPLADS project analytics, risk assessments, anomalies, and alerts.
+
+BACKEND REQUIREMENTS:
+
+1. Create report generation APIs based only on existing available data.
+
+The report should combine relevant information from:
+- Projects
+- Datasets
+- Analytics
+- Phase 6 anomaly results
+- Phase 7 risk assessments
+- Phase 8 alerts and recommendations
+
+2. Create a report summary endpoint.
+
+Example route:
+GET /api/reports/summary
+
+Return useful aggregate information such as:
+- Total projects
+- Total datasets
+- Total anomalies
+- Risk level distribution
+- Active alerts
+- High priority alerts
+- Projects requiring attention
+
+3. Create a detailed report endpoint.
+
+Example:
+GET /api/reports/executive
+
+The response should include structured sections such as:
+- Executive overview
+- Project statistics
+- Risk summary
+- Alert summary
+- Anomaly summary
+- High priority items
+- Recommendations
+
+4. Support filtering where practical:
+- Project
+- Risk level
+- Priority
+- Alert status
+
+5. Add an export-friendly JSON endpoint.
+
+Example:
+GET /api/reports/export
+
+The exported data must be generated from existing application data.
+
+Do not create fake or fabricated analytics.
+
+6. Handle empty database states gracefully.
+
+If no data exists, return valid empty summaries instead of errors.
+
+FRONTEND REQUIREMENTS:
+
+1. Add a new navigation item:
+
+Reports
+
+2. Create a dedicated Reports page.
+
+Suggested sections:
+
+EXECUTIVE REPORTS
+- Overall platform summary cards
+
+PROJECT OVERVIEW
+- Total projects
+- Dataset statistics
+
+RISK OVERVIEW
+- Low risk
+- Medium risk
+- High risk
+- Critical risk
+
+ALERT OVERVIEW
+- Total alerts
+- High priority alerts
+- Active alerts
+
+ANOMALY OVERVIEW
+- Available anomaly statistics
+
+ATTENTION REQUIRED
+Show important existing items that require manual review.
+
+RECOMMENDATIONS
+Display recommendations generated from existing Phase 8 data.
+
+3. Add filtering controls where supported.
+
+4. Add an Export Report button.
+
+The initial export can download the structured report as JSON.
+
+Do not add PDF generation unless it can be implemented cleanly without introducing unnecessary dependencies.
+
+5. Keep the UI consistent with the existing MPLADS Sentinel design.
+
+DATA INTEGRITY RULES:
+
+- Do not fabricate project data.
+- Do not fabricate anomalies.
+- Do not fabricate risk scores.
+- Do not make fraud or corruption claims.
+- Reports must clearly reflect available stored data.
+- Empty states should explain that data is not yet available.
+
+API REQUIREMENTS:
+
+Create only the routes needed for Phase 10.
+
+Ensure:
+- Proper validation
+- Clear response models
+- Graceful error handling
+- Existing APIs remain unchanged
+
+VERIFICATION:
+
+Perform focused verification only.
+
+Check:
+- Backend imports successfully
+- New Phase 10 routes register correctly
+- Existing Phase 1–8 routes remain available
+- Report summary works with empty data
+- Report generation works with available data
+- Filters work where implemented
+- Export endpoint returns valid structured JSON
+- Frontend production build succeeds
+
+Do not perform unnecessary repeated verification passes.
+
+FINAL RESPONSE FORMAT:
+
+After implementation provide only:
+
+1. Phase 10 features implemented
+2. Files created or modified
+3. New API routes
+4. Frontend pages/components added
+5. Focused verification results
+6. Confirmation that Phase 1–8 functionality was not intentionally changed
+
+Do not start Phase 11.

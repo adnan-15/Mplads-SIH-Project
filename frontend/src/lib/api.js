@@ -167,3 +167,38 @@ export function getAlert(alertId) {
 export function getAlertSummary() {
   return request("/alerts/summary");
 }
+
+function reportQuery({
+  alertStatus = "",
+  priority = "",
+  projectId = "",
+  riskLevel = "",
+} = {}) {
+  const params = new URLSearchParams();
+  if (alertStatus) {
+    params.set("alert_status", alertStatus);
+  }
+  if (priority) {
+    params.set("priority", priority);
+  }
+  if (projectId) {
+    params.set("project_id", projectId);
+  }
+  if (riskLevel) {
+    params.set("risk_level", riskLevel);
+  }
+  const query = params.toString();
+  return query ? `?${query}` : "";
+}
+
+export function getReportSummary(filters = {}) {
+  return request(`/reports/summary${reportQuery(filters)}`);
+}
+
+export function getExecutiveReport(filters = {}) {
+  return request(`/reports/executive${reportQuery(filters)}`);
+}
+
+export function getReportExport(filters = {}) {
+  return request(`/reports/export${reportQuery(filters)}`);
+}

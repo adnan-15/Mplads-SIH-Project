@@ -30,6 +30,12 @@ export const navItems = [
     description: "Reviewable potential anomalies and alerts will appear here.",
   },
   {
+    path: "/reports",
+    label: "Reports",
+    shortLabel: "E",
+    description: "Executive summaries and structured exports will appear here.",
+  },
+  {
     path: "/dataset-management",
     label: "Dataset Management",
     shortLabel: "DS",
