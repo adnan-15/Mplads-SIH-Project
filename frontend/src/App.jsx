@@ -6,6 +6,7 @@ import { AIRiskAnalysis } from "./pages/AIRiskAnalysis";
 import { Dashboard } from "./pages/Dashboard";
 import { DatasetManagement } from "./pages/DatasetManagement";
 import { Projects } from "./pages/Projects";
+import { RiskAlerts } from "./pages/RiskAlerts";
 
 function Navigation() {
   return (
@@ -66,12 +67,14 @@ function AppShell() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/ai-risk-analysis" element={<AIRiskAnalysis />} />
+            <Route path="/alerts" element={<RiskAlerts />} />
             {navItems
               .filter(
                 (item) =>
                   item.path !== "/" &&
                   item.path !== "/projects" &&
                   item.path !== "/ai-risk-analysis" &&
+                  item.path !== "/alerts" &&
                   item.path !== "/dataset-management",
               )
               .map((item) => (

@@ -140,3 +140,30 @@ export function getRiskAssessments(
 export function getRiskSummary(datasetId) {
   return request(`/datasets/${datasetId}/risk-summary`);
 }
+
+export function getAlerts({
+  page = 1,
+  pageSize = 20,
+  priority = "",
+  riskLevel = "",
+} = {}) {
+  const params = new URLSearchParams({
+    page: String(page),
+    page_size: String(pageSize),
+  });
+  if (priority) {
+    params.set("priority", priority);
+  }
+  if (riskLevel) {
+    params.set("risk_level", riskLevel);
+  }
+  return request(`/alerts?${params.toString()}`);
+}
+
+export function getAlert(alertId) {
+  return request(`/alerts/${alertId}`);
+}
+
+export function getAlertSummary() {
+  return request("/alerts/summary");
+}
